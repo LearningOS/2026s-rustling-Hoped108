@@ -11,7 +11,7 @@
 
 fn main() {
     let mut original_price = 51;
-    println!("Your sale price is not{}", sale_price(original_price));
+    println!("Your sale price is {}", sale_price(original_price));
 }
 
 fn sale_price(mut price: i32) -> i32 {
