@@ -2,8 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -71,12 +69,57 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
+		let merged = Self {
+            length: list_a.length + list_b.length,
             start: None,
             end: None,
-        }
+        };
+
+		while list_a.start.is_some() && list_b.start.is_some() {
+			let take_val = unsafe {
+				(*list_a.start.unwrap()).as_ptr().val <= (*list_b.start.unwrap()).as_ptr().val
+			};
+
+			let next = if take_val {
+				let node = list_a.start.take().unwrap();
+				list_a.start = unsafe { (*node.as_ptr()).next };
+				node
+			}else {
+				let node = list_b.start.take().unwrap();
+				list_b.start = unsafe { (*node.as_ptr()).next };
+				node
+			};
+
+			unsafe {
+				(*next.as_ptr()).next = None;
+			}
+			match merged.end {
+				None => merged.start = Some(next),
+				Some(end) => unsafe { (*end.as_ptr()).next = Some(next) },
+			}
+
+			merged.end = Some(next);
+		}
+
+		let rest = if list_a.start.is_some() {
+			list_a.start
+		}else {
+			list_b.start
+		};
+
+		if let Some(rest_start) = rest {
+			match merged.end {
+				None => merged.start = Some(rest_start),
+				Some(end) => unsafe { (*end.as_ptr()).next = Some(res_start)},
+			}
+			merged.end = if list_a.start.is_some() {
+				list_a.end
+			}else {
+				list_b.end
+			}
+		} 
+
+		merged
 	}
 }
 
