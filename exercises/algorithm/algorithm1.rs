@@ -67,9 +67,13 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	
+}
+
+impl<T: std::cmp::PartialOrd> LinkedList<T> {
+    pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
-		let merged = Self {
+		let mut merged = Self {
             length: list_a.length + list_b.length,
             start: None,
             end: None,
@@ -77,7 +81,7 @@ impl<T> LinkedList<T> {
 
 		while list_a.start.is_some() && list_b.start.is_some() {
 			let take_val = unsafe {
-				(*list_a.start.unwrap()).as_ptr().val <= (*list_b.start.unwrap()).as_ptr().val
+				(*list_a.start.unwrap().as_ptr()).val <= (*list_b.start.unwrap().as_ptr()).val
 			};
 
 			let next = if take_val {
@@ -110,7 +114,7 @@ impl<T> LinkedList<T> {
 		if let Some(rest_start) = rest {
 			match merged.end {
 				None => merged.start = Some(rest_start),
-				Some(end) => unsafe { (*end.as_ptr()).next = Some(res_start)},
+				Some(end) => unsafe { (*end.as_ptr()).next = Some(rest_start)},
 			}
 			merged.end = if list_a.start.is_some() {
 				list_a.end

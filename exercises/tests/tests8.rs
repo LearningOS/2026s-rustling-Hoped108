@@ -1,6 +1,6 @@
 // tests8.rs
 //
-// This execrise shares `build.rs` with the previous exercise.
+// This exercise shares `build.rs` with the previous exercise.
 // You need to add some code to `build.rs` to make both this exercise and
 // the previous one work.
 //

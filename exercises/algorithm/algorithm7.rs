@@ -2,8 +2,6 @@
 	stack
 	This question requires you to use a stack to achieve a bracket match
 */
-
-// I AM NOT DONE
 #[derive(Debug)]
 struct Stack<T> {
 	size: usize,
@@ -31,8 +29,12 @@ impl<T> Stack<T> {
 		self.size += 1;
 	}
 	fn pop(&mut self) -> Option<T> {
-		// TODO
-		None
+		if self.size == 0 {
+			None
+		} else {
+			self.size -= 1;
+			self.data.pop()
+		}
 	}
 	fn peek(&self) -> Option<&T> {
 		if 0 == self.size {
@@ -46,63 +48,75 @@ impl<T> Stack<T> {
 		}
 		self.data.get_mut(self.size - 1)
 	}
-	fn into_iter(self) -> IntoIter<T> {
-		IntoIter(self)
-	}
-	fn iter(&self) -> Iter<T> {
-		let mut iterator = Iter { 
-			stack: Vec::new() 
-		};
-		for item in self.data.iter() {
-			iterator.stack.push(item);
-		}
-		iterator
-	}
-	fn iter_mut(&mut self) -> IterMut<T> {
-		let mut iterator = IterMut { 
-			stack: Vec::new() 
-		};
-		for item in self.data.iter_mut() {
-			iterator.stack.push(item);
-		}
-		iterator
-	}
+	// fn into_iter(self) -> IntoIter<T> {
+	// 	IntoIter(self)
+	// }
+	// fn iter(&self) -> Iter<T> {
+	// 	let mut iterator = Iter { 
+	// 		stack: Vec::new() 
+	// 	};
+	// 	for item in self.data.iter() {
+	// 		iterator.stack.push(item);
+	// 	}
+	// 	iterator
+	// }
+	// fn iter_mut(&mut self) -> IterMut<T> {
+	// 	let mut iterator = IterMut { 
+	// 		stack: Vec::new() 
+	// 	};
+	// 	for item in self.data.iter_mut() {
+	// 		iterator.stack.push(item);
+	// 	}
+	// 	iterator
+	// }
 }
-struct IntoIter<T>(Stack<T>);
-impl<T: Clone> Iterator for IntoIter<T> {
-	type Item = T;
-	fn next(&mut self) -> Option<Self::Item> {
-		if !self.0.is_empty() {
-			self.0.size -= 1;self.0.data.pop()
-		} 
-		else {
-			None
-		}
-	}
-}
-struct Iter<'a, T: 'a> {
-	stack: Vec<&'a T>,
-}
-impl<'a, T> Iterator for Iter<'a, T> {
-	type Item = &'a T;
-	fn next(&mut self) -> Option<Self::Item> {
-		self.stack.pop()
-	}
-}
-struct IterMut<'a, T: 'a> {
-	stack: Vec<&'a mut T>,
-}
-impl<'a, T> Iterator for IterMut<'a, T> {
-	type Item = &'a mut T;
-	fn next(&mut self) -> Option<Self::Item> {
-		self.stack.pop()
-	}
-}
+// struct IntoIter<T>(Stack<T>);
+// impl<T: Clone> Iterator for IntoIter<T> {
+// 	type Item = T;
+// 	fn next(&mut self) -> Option<Self::Item> {
+// 		if !self.0.is_empty() {
+// 			self.0.size -= 1;self.0.data.pop()
+// 		} 
+// 		else {
+// 			None
+// 		}
+// 	}
+// }
+// struct Iter<'a, T: 'a> {
+// 	stack: Vec<&'a T>,
+// }
+// impl<'a, T> Iterator for Iter<'a, T> {
+// 	type Item = &'a T;
+// 	fn next(&mut self) -> Option<Self::Item> {
+// 		self.stack.pop()
+// 	}
+// }
+// struct IterMut<'a, T: 'a> {
+// 	stack: Vec<&'a mut T>,
+// }
+// impl<'a, T> Iterator for IterMut<'a, T> {
+// 	type Item = &'a mut T;
+// 	fn next(&mut self) -> Option<Self::Item> {
+// 		self.stack.pop()
+// 	}
+// }
 
 fn bracket_match(bracket: &str) -> bool
 {
 	//TODO
-	true
+	let mut stack = Stack::new();
+
+	for ch in bracket.chars() {
+		match ch {
+			'(' | '{' | '[' => stack.push(ch),
+            ')' => if stack.pop() != Some('(') { return false },
+            '}' => if stack.pop() != Some('{') { return false },
+            ']' => if stack.pop() != Some('[') { return false },
+            _ => continue, // ignore other characters
+		}
+	}
+
+	stack.is_empty()
 }
 
 #[cfg(test)]
